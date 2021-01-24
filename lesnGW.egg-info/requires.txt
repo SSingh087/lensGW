@@ -1,0 +1,2 @@
+lenstronomy>=1.7.0
+pycbc>=1.16.13

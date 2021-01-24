@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: lesnGW
+Version: 1.0.0
+Summary: lensGW: Python package for gravitational wave lensing using PyCBC
+Home-page: https://github.com/SSingh087/lensGW
+Author: Shashwat Singh
+Author-email: shashwat98singh@gmail.com
+License: GNU General Public License v3
+Description: #	PROBING DARK MATTER USING LENSING OF GRAVITATIONAL WAVES
+        
+        ## Primary results
+        
+Keywords: pycbc,gravitational wave lensing
+Platform: UNKNOWN
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: GNU General Public License v3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Lensing :: Physics
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
