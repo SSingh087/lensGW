@@ -21,7 +21,7 @@ def get_version(rel_path):
     else:
         raise RuntimeError("Unable to find version string.")
 
-setuptools.setup(name                          = "lesnGW",
+setuptools.setup(name                          = "ll",
                  version                       = get_version("lensGW/__init__.py"),
                  description                   = 'lensGW: Python package for gravitational wave lensing using PyCBC',
                  long_description_content_type = "text/markdown",
@@ -29,7 +29,7 @@ setuptools.setup(name                          = "lesnGW",
                  keywords                      = ['pycbc', 'gravitational wave lensing'],
                  author                        = 'Shashwat Singh',
                  author_email                  = 'shashwat98singh@gmail.com',
-                 url                           = 'https://github.com/SSingh087/lensGW',
+                 url                           = 'https://github.com/SSingh087/ll',
                  license                       = 'GNU General Public License v3',
                  packages                      = setuptools.find_packages(),
                  python_requires               = '>=3.6',
