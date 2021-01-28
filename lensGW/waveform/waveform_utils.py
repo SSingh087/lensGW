@@ -24,16 +24,11 @@ class unlens_waveform_model(object):
         self.delta_t = param['delta_t']
         self.delta_f = param['delta_f']
         self.f_lower = param['f_lower']
-        self.det = param['det']
         self.end_time = param['end_time']
-        self.ra = param['ra']
-        self.dec = param['dec']
-        self.polarization = param['polarization']
         self.eccentricity = param['eccentricity']
         self.generate()
     
     def generate(self):
-
         if self.domain == 'td':
             hp, hc = get_td_waveform(approximant= self.approximant,
                                      mass1= self.mass1,
@@ -61,23 +56,11 @@ class unlens_waveform_model(object):
                                      eccentricity = self.eccentricity,
                                     )
             hp, hc = hp.to_timeseries(delta_t=self.delta_t), hc.to_timeseries(delta_t=self.delta_t)
-        if self.det is None:
-            raise RuntimeWarning('Waveform is not projected on any detector !!')
-            return None,hp,hc
-        elif self.det == 'H1':
+        if self.end_time is not None:
             hp.start_time += self.end_time
             hc.start_time += self.end_time
-            return Detector('H1').project_wave(hp, hc,  self.ra, self.dec, self.polarization), hp, hc
-        
-        elif self.det == 'L1':
-            hp.start_time += self.end_time
-            hc.start_time += self.end_time
-            return Detector('L1').project_wave(hp, hc,  self.ra, self.dec, self.polarization), hp, hc
-        
-        elif self.det == 'V1':
-            hp.start_time += self.end_time
-            hc.start_time += self.end_time
-            return Detector('V1').project_wave(hp, hc,  self.ra, self.dec, self.polarization), hp, hc
+
+        return hp, hc
             
 class lens_waveform_model(object):
     
@@ -89,12 +72,12 @@ class lens_waveform_model(object):
             cp.allow_no_value=True
             cp.read(self.config_file)
             self.param = {}  
-            print('----------Param for lensed Waveforms-----------------\n')
+            #print('----------Param for lensed Waveforms-----------------\n')
             for (key,val) in cp.items('Param'):
                 self.param.update({key: eval(val)})
-                print(key,':',val)
+                #print(key,':',val)
 
-    def param_initialize(self):
+    def param_initialize_and_eval(self):
         y0 = self.param['y0']
         y1 = self.param['y1']
         l0 = self.param['l0']
@@ -102,17 +85,16 @@ class lens_waveform_model(object):
         zS = self.param['zS']
         zL = self.param['zL']
         # masses 
-        mL1  = self.param['mL1']
-        mL2  = self.param['mL2']
-
+        mL  = self.param['mL']
         lens_model_list = self.param['lens_model_list']
-        return self.eval_param(y0,y1,l0,l1,zS,zL,mL1,mL2,lens_model_list)
         
-    def eval_param(self,y0,y1,l0,l1,zS,zL,mL1,mL2,lens_model_list):
+        return self.eval_param(y0,y1,l0,l1,zS,zL,mL,lens_model_list)
+        
+    def eval_param(self,y0,y1,l0,l1,zS,zL,mL,lens_model_list):
 
-        mtot = mL1+mL2
-        thetaE1 = param_processing(zL, zS, mL1)
-        thetaE2 = param_processing(zL, zS, mL2)
+        mtot = np.sum(mL)
+        thetaE1 = param_processing(zL, zS, mL[0])
+        thetaE2 = param_processing(zL, zS, mL[1])
         thetaE  = param_processing(zL, zS, mtot)
 
         beta0,beta1 = y0*thetaE,y1*thetaE
@@ -137,7 +119,7 @@ class lens_waveform_model(object):
             #print('Macro Image RA :',MacroImg_ra,'\nMacro Image DEC :',MacroImg_dec,'\npixel width :',pixel_width)
             #print('Solver convergence success !')
             return Img_ra, Img_dec, beta0, beta1, zL, zS, \
-                    lens_model_list, kwargs_lens_list, mtot
+                    lens_model_list, kwargs_lens_list
 
         else :
             raise RuntimeError("data-type not correct !!")

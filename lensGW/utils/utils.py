@@ -11,15 +11,8 @@ arcsec2rad      = np.pi/(648000)                          # conversion factor fr
 G               = const.G                                 # gravitational constant (m3*Kg-1*s-2)
 c               = const.c                                 # speed of light (m/s)
 
-def get_lensed_gws(Fmag, hpt, hct, strain):
-    if strain is not None:
-        lensed_strain,hp_lensed,hc_lensed = np.zeros(len(Fmag)),np.zeros(len(Fmag)),np.zeros(len(Fmag))
-        for i in range(len(Fmag)):
-            hp_lensed[i], hc_lensed[i] = Fmag[i]*hpt[i], Fmag[i]*hct[i]
-            lensed_strain[i] = Fmag[i]*strain[i]
-        return hp_lensed, hc_lensed, lensed_strain
-    else:
-        hp_lensed,hc_lensed = np.zeros(len(Fmag)),np.zeros(len(Fmag))
+def get_lensed_gws(Fmag, hpt, hct):
+        hp_lensed,hc_lensed = np.zeros(len(Fmag),dtype=np.complex128),np.zeros(len(Fmag),dtype=np.complex128)
         for i in range(len(Fmag)):
             hp_lensed[i], hc_lensed[i] = Fmag[i]*hpt[i], Fmag[i]*hct[i]
         return hp_lensed, hc_lensed
