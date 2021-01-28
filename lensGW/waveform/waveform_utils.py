@@ -61,22 +61,21 @@ class unlens_waveform_model(object):
                                      eccentricity = self.eccentricity,
                                     )
             hp, hc = hp.to_timeseries(delta_t=self.delta_t), hc.to_timeseries(delta_t=self.delta_t)
+            if self.end_time is not None:
+                hp.start_time += self.end_time
+                hc.start_time += self.end_time
+
         if self.det is None:
             raise RuntimeWarning('Waveform is not projected on any detector !!')
             return None,hp,hc
+
         elif self.det == 'H1':
-            hp.start_time += self.end_time
-            hc.start_time += self.end_time
             return Detector('H1').project_wave(hp, hc,  self.ra, self.dec, self.polarization), hp, hc
         
         elif self.det == 'L1':
-            hp.start_time += self.end_time
-            hc.start_time += self.end_time
             return Detector('L1').project_wave(hp, hc,  self.ra, self.dec, self.polarization), hp, hc
         
         elif self.det == 'V1':
-            hp.start_time += self.end_time
-            hc.start_time += self.end_time
             return Detector('V1').project_wave(hp, hc,  self.ra, self.dec, self.polarization), hp, hc
             
 class lens_waveform_model(object):
@@ -89,10 +88,10 @@ class lens_waveform_model(object):
             cp.allow_no_value=True
             cp.read(self.config_file)
             self.param = {}  
-            print('----------Param for lensed Waveforms-----------------\n')
+            #print('----------Param for lensed Waveforms-----------------\n')
             for (key,val) in cp.items('Param'):
                 self.param.update({key: eval(val)})
-                print(key,':',val)
+                #print(key,':',val)
 
     def param_initialize(self):
         y0 = self.param['y0']
