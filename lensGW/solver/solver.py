@@ -91,7 +91,7 @@ def lens_eq_solutions(source_pos_x,
 
     # check if the pixel size safety threshold has been reached and stop the iteration in that case
     if (pixel_width<10**(-25)/scale_factor):
-        sys.stdout.write('\n\nMinumum pixel size reached. The iteration will be stopped.\n\n')
+        #sys.stdout.write('\n\nMinumum pixel size reached. The iteration will be stopped.\n\n')
         non_stop = False 
      
     # iterate on the promising tiles otherwise
@@ -192,7 +192,7 @@ def lens_eq_solutions(source_pos_x,
         if (pixel_width<10**(-25)/scale_factor): 
         
             # stopping condition reached
-            sys.stdout('\n\nMinumum pixel size reached. The iteration will be stopped.\n')
+            #sys.stdout('\n\nMinumum pixel size reached. The iteration will be stopped.\n')
             non_stop = False
             
         else:

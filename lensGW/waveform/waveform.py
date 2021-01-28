@@ -28,7 +28,7 @@ class gw_signal(object):
     
     def unlensed_gw(self):
         hp, hc = unlens_waveform_model(self.param).generate()
-        print('waveform successfully generated !!')
+        #print('waveform successfully generated !!')
         return hp, hc
     
     def lensed_gw(self, loc_lensed,
