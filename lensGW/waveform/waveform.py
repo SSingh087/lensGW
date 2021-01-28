@@ -21,10 +21,10 @@ class gw_signal(object):
         cp.allow_no_value=True
         cp.read(self.config_file)
         self.param = {}  
-        print('----------Param for Waveforms-----------------\n')
+        #print('----------Param for Waveforms-----------------\n')
         for (key,val) in cp.items('Param'):
             self.param.update({key: eval(val)})
-            print(key,':',val)
+            #print(key,':',val)
     
     def unlensed_gw(self):
         hp, hc = unlens_waveform_model(self.param).generate()
