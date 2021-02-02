@@ -22,7 +22,6 @@ class unlens_waveform_model(object):
         self.inclination = param['inclination']
         self.coa_phase = param['coa_phase']
         self.delta_t = param['delta_t']
-        self.delta_f = param['delta_f']
         self.f_lower = param['f_lower']
         self.end_time = param['end_time']
         self.eccentricity = param['eccentricity']
@@ -51,7 +50,7 @@ class unlens_waveform_model(object):
                                      spin2z= self.spin2z,spin2x=self.spin2x,spin2y=self.spin2y,
                                      inclination= self.inclination,
                                      coa_phase= self.coa_phase,
-                                     delta_f= self.delta_f,
+                                     delta_f= 1/self.delta_t,
                                      f_lower= self.f_lower,
                                      eccentricity = self.eccentricity,
                                     )
@@ -90,8 +89,7 @@ class lens_waveform_model(object):
         return self.eval_param(y0,y1,l0,l1,zS,zL,mL,lens_model_list)
         
     def eval_param(self,y0,y1,l0,l1,zS,zL,mL,lens_model_list):
-
-        mtot = np.sum(mL)
+        mtot = mL[0] + mL[1]
         thetaE1 = param_processing(zL, zS, mL[0])
         thetaE2 = param_processing(zL, zS, mL[1])
         thetaE  = param_processing(zL, zS, mtot)
