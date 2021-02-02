@@ -1,4 +1,3 @@
-import numpy as np
 from pycbc.waveform import get_td_waveform, get_fd_waveform
 from pycbc.detector import Detector
 import configparser as ConfigParser
@@ -78,20 +77,22 @@ class lens_waveform_model(object):
                 #print(key,':',val)
 
     def param_initialize_and_eval(self):
+        from numpy import array
         y0 = self.param['y0']
         y1 = self.param['y1']
         l0 = self.param['l0']
         l1 = self.param['l1']
         zS = self.param['zS']
         zL = self.param['zL']
-        # masses 
         mL  = self.param['mL']
+        mL = array(mL)
         lens_model_list = self.param['lens_model_list']
         return self.eval_param(y0,y1,l0,l1,zS,zL,mL,lens_model_list)
         
     def eval_param(self,y0,y1,l0,l1,zS,zL,mL,lens_model_list):
-
-        mtot = np.sum(mL)
+        from numpy import sum
+        mtot = sum(mL)
+        
         thetaE1 = param_processing(zL, zS, mL[0])
         thetaE2 = param_processing(zL, zS, mL[1])
         thetaE  = param_processing(zL, zS, mtot)
