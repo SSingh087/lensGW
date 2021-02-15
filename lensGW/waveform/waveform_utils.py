@@ -98,25 +98,17 @@ class lens_waveform_model(object):
         eta10,eta11 = l0*thetaE,l1*thetaE
         eta20,eta21 = -l0*thetaE,l1*thetaE
 
-        # lens model
-        
         kwargs_point_mass_1 = {'center_x': eta10,'center_y': eta11, 'theta_E': thetaE1} 
         kwargs_point_mass_2 = {'center_x': eta20,'center_y': eta21, 'theta_E': thetaE2} 
         kwargs_lens_list    = [kwargs_point_mass_1, kwargs_point_mass_2]  
-
-        
-        if type(lens_model_list) is list:
-            solver_kwargs = {'SearchWindowMacro': 4*thetaE1,
-                            'SearchWindow'     : 4*thetaE2}
-            Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width  = microimages(source_pos_x    = beta0,
-                                                                                   source_pos_y    = beta1,
-                                                                                   lens_model_list = lens_model_list,
-                                                                                   kwargs_lens     = kwargs_lens_list,
-                                                                                   **solver_kwargs)
-            #print('Macro Image RA :',MacroImg_ra,'\nMacro Image DEC :',MacroImg_dec,'\npixel width :',pixel_width)
-            #print('Solver convergence success !')
-            return Img_ra, Img_dec, beta0, beta1, zL, zS, \
-                    lens_model_list, kwargs_lens_list
-
-        else :
-            raise RuntimeError("data-type not correct !!")
+        solver_kwargs = {'SearchWindowMacro': 4*thetaE1,
+                        'SearchWindow'     : 4*thetaE2}
+        Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width  = microimages(source_pos_x    = beta0,
+                                                                                source_pos_y    = beta1,
+                                                                                lens_model_list = lens_model_list,
+                                                                                kwargs_lens     = kwargs_lens_list,
+                                                                                **solver_kwargs)
+        #print('Macro Image RA :',MacroImg_ra,'\nMacro Image DEC :',MacroImg_dec,'\npixel width :',pixel_width)
+        #print('Solver convergence success !')
+        return Img_ra, Img_dec, beta0, beta1, zL, zS, \
+                lens_model_list, kwargs_lens_list
