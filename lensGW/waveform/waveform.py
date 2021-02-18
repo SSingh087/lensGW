@@ -27,9 +27,10 @@ class gw_signal(object):
             #print(key,':',val)
     
     def unlensed_gw(self):
-        hp, hc = unlens_waveform_model(self.param).generate()
+        """retuns hp, hc unlensed"""
+        return unlens_waveform_model(self.param).generate()
         #print('waveform successfully generated !!')
-        return hp, hc
+        
     
     def lensed_gw(self, loc_lensed,
                   diff         = None,
@@ -58,6 +59,7 @@ class gw_signal(object):
                 #------------return numpy values---------------#
                 hp_tilde_lensed, hc_tilde_lensed = get_lensed_gws(Fmag, hp.data, hc.data)
                 #------------convert to pycbc.TimeSeries---------------#
+
                 hp_tilde_lensed = TimeSeries(hp_tilde_lensed, delta_t=hp.delta_t)
                 hp_tilde_lensed.start_time = hp.start_time
                 hc_tilde_lensed = TimeSeries(hc_tilde_lensed, delta_t=hc.delta_t)
