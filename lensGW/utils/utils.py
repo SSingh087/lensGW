@@ -12,7 +12,7 @@ G               = const.G                                 # gravitational consta
 c               = const.c                                 # speed of light (m/s)
 
 def get_lensed_gws(Fmag, hpt, hct):
-        hp_lensed,hc_lensed = np.zeros(len(Fmag),dtype=np.float64),np.zeros(len(Fmag),dtype=np.float64)
+        hp_lensed,hc_lensed = np.zeros(len(Fmag),dtype=np.float16),np.zeros(len(Fmag),dtype=np.float16)
         for i in range(len(Fmag)):
             hp_lensed[i], hc_lensed[i] = Fmag[i]*hpt[i], Fmag[i]*hct[i]
         return hp_lensed, hc_lensed
@@ -77,8 +77,6 @@ def magnifications(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=None
     
     # magnifications
     mu = lens_model.magnification(Img_ra, Img_dec, kwargs_lens_list, diff=diff)
-    
-    
     return mu
     
 

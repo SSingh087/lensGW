@@ -2,10 +2,9 @@ import numpy as np
 from lensGW.utils.utils import TimeDelay, getMinMaxSaddle, magnifications
 
 def amplification_from_data(frequencies, mu, td, n):
-    Fmag = np.zeros(len(frequencies), dtype=np.complex128)
+    Fmag = np.zeros(len(frequencies))
     for i in range(len(mu)):
         Fmag += np.sqrt(np.abs(mu[i]))* np.exp(1j*np.pi*(2.*frequencies*td[i] - n[i]))
-        #Fmag = [ ....... ]  + \sqrt[i_th] 
     return Fmag
 
 def geometricalOpticsMagnification(frequencies,
@@ -29,17 +28,13 @@ def geometricalOpticsMagnification(frequencies,
     Fmag    = np.zeros(len(frequencies), dtype=np.complex128)
         
     # time delays
-    td_list = TimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_list, kwargs_lens_list, scaled=scaled, scale_factor=scale_factor, cosmo=cosmo)
+    td = np.array(TimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_list, kwargs_lens_list, scaled=scaled, scale_factor=scale_factor, cosmo=cosmo))
 
     # magnifications
-    mu_list = magnifications(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=diff)
+    mu = np.array(magnifications(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=diff))
     
     # Morse indices
-    n_list = getMinMaxSaddle(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=diff) 
-
-    td = np.array(td_list)
-    mu = np.array(mu_list)
-    n  = np.array(n_list)
+    n  = np.array(getMinMaxSaddle(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=diff))
 
     # compute the amplification factor
     Fmag = amplification_from_data(frequencies, mu, td, n)
