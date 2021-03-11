@@ -81,12 +81,11 @@ class lens_waveform_model(object):
         l1 = self.param['l1']
         zS = self.param['zS']
         zL = self.param['zL']
-        mL  = self.param['mL']
+        mL = self.param['mL']
         lens_model_list = self.param['lens_model_list']
         return self.eval_param(y0,y1,l0,l1,zS,zL,mL,lens_model_list)
         
     def eval_param(self,y0,y1,l0,l1,zS,zL,mL,lens_model_list):
-        mL,l0,l1 = np.array(mL,dtype=float64), np.array(l0,dtype=float64), np.array(l1,dtype=float64)
         if len(mL)>1:
             mtot = sum(mL)
             thetaE  = param_processing(zL, zS, mtot)
