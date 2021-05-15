@@ -1,8 +1,41 @@
 ### calling method
 
-- install pycbc
-- install lensGW
+#### install pycbc
+```
+import sys
+!{sys.executable} -m pip install pycbc ligo-common emcee==2.2.1 --no-cache-dir
+```
+<hr>
+
+#### install lenstronomy
+  - upload version 1.7.0 on drive (unzip using `!unzip`) / upload unzipped version
+  - mount drive
+```
+    from google.colab import drive
+    drive.mount('/content/drive')
+  ```
+  - use `cd` comand to locate the file Eg:`cd drive/MyDrive/lenstronomy/lenstronomy-1.7.0`
+  - `!python setup.py install`
+  - return to home `cd ..`
+ <HR>
+
+#### install lensGW
+  - fork lensGW 
+  - clone lensGW `!git clone https://username:password@github.com/SSingh087/test.git`
+  - `cd test`
+  - `!python setup.py install`
+  - return to home `cd ..`
+  
+<hr>
+
 - install pycbc-lensGW
+  - clone pycbc-lensGW `!git clone https://github.com/SSingh087/lensGW-PyCBC-plugin.git`
+  - `!python setup.py install`
+  - restart runtime
+
+<hr>
+
+### Run this sample for testing
 
 ```
 from pycbc import waveform
