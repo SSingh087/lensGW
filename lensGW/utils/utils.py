@@ -12,9 +12,11 @@ G               = const.G                                 # gravitational consta
 c               = const.c                                 # speed of light (m/s)
 
 def get_lensed_gws(Fmag, hpt, hct):
-        hp_lensed,hc_lensed = np.zeros(len(Fmag),dtype=np.float64),np.zeros(len(Fmag),dtype=np.float64)
+        hp_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
+        hc_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
         for i in range(len(Fmag)):
-            hp_lensed[i], hc_lensed[i] = Fmag[i]*hpt[i], Fmag[i]*hct[i]
+            hp_lensed[i] = Fmag[i]*hpt
+            hc_lensed[i] = Fmag[i]*hct
         return hp_lensed, hc_lensed
         
 def discardOverlaps(inarrX, inarrY, deltas, overlapDist):     

@@ -2,10 +2,9 @@ import numpy as np
 from lensGW.utils.utils import TimeDelay, getMinMaxSaddle, magnifications
 
 def amplification_from_data(frequencies, mu, td, n):
-    Fmag = np.zeros(len(frequencies), dtype=np.complex128)
+    Fmag = np.zeros((len(mu), len(frequencies)), dtype=np.complex128)
     for i in range(len(mu)):
-        Fmag += np.sqrt(np.abs(mu[i]))* np.exp(1j*np.pi*(2.*frequencies*td[i] - n[i]))
-        #Fmag = [ ....... ]  + \sqrt[i_th] 
+        Fmag[i] = np.sqrt(np.abs(mu[i]))* np.exp(1j*np.pi*(2.*frequencies*td[i] - n[i]))
     return Fmag
 
 def geometricalOpticsMagnification(frequencies,
