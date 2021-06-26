@@ -28,41 +28,66 @@ class lens_waveform_model(object):
         lens_model_list = self.param['lens_model_list']
         return self.eval_param(y0,y1,l0,l1,zS,zL,mL,lens_model_list)
         
-    def eval_param(self,y0,y1,l0,l1,zS,zL,mL,lens_model_list,optim='False'):
+    def eval_param(self, source_ra, source_dec, lens_ra, lens_dec, 
+                    zS, zL, mL, lens_model_list, optim='False'):
+    """
+    Finds lensed images for the given set of parameters
+    :param source_ra: Right accession of the source of GW (in radians)
+    :type source_ra: float
+    :param source_dec: Declination of the source of GW (in radians)
+    :type source_dec: float
+    :param lens_ra: Right accession of the source of GW (in radians)
+    :type lens_ra: array
+    :param lens_dec: Declination of the source of GW (in radians)
+    :type lens_dec: array
+    :param zL: lens redshift
+    :type zL: float
+    :param zS: source redshift
+    :type zS: float
+    :param lens_model_list: names of the lens profiles to be considered for the lens model
+    :type lens_model_list: list of strings
+    :param optim: For optimization of search algorithm 
+    :type optim: Bool (default False)
+    """
+    # SECTION BETWEEN --- THIS IS UNDER WORK IN PROGRESS
+#--------------------------------------------------------------------------------------------
         if len(mL)>1:
             mtot = sum(mL)
             thetaE  = param_processing(zL, zS, mtot)
             beta0, beta1 = y0*thetaE, y1*thetaE
             thetaE_PM, eta0, eta1 = np.zeros(0), np.zeros(0), np.zeros(0)
             kwargs_lens_list = []
+
             for i in range(len(mL)):
                 thetaE_PM = np.append(thetaE_PM,param_processing(zL, zS, mL[i]))
                 eta0 = np.append(eta0,l0[i]*thetaE_PM[i])
                 eta1 = np.append(eta1,l1[i]*thetaE_PM[i])
                 kwargs_lens_list.append({'center_x': eta0[i],'center_y': eta1[i], 'theta_E': thetaE_PM[i]})
             solver_kwargs = {'SearchWindowMacro': 4*thetaE_PM[0]}
+
             for i in range(1,len(mL)):
                 solver_kwargs.update({'SearchWindow': 4*thetaE_PM[i]})
             solver_kwargs.update({'Optimization': optim})
+
             Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width  = microimages(source_pos_x    = beta0,
                                                                                    source_pos_y    = beta1,
                                                                                    lens_model_list = lens_model_list,
                                                                                    kwargs_lens     = kwargs_lens_list,
                                                                                    **solver_kwargs)
             return Img_ra, Img_dec, beta0, beta1, zL, zS, eta0, eta1, lens_model_list, kwargs_lens_list
+#-------------------------------------------------------------------------------------------
 
         elif len(mL)==1:
-            mL,l0,l1 = mL[0],l0[0],l1[0]
+            mL, l0, l1 = mL[0], l0[0], l1[0]
             thetaE_PM = param_processing(zL, zS, mL)
-            beta0, beta1 = y0*thetaE_PM, y1*thetaE_PM
-            eta0, eta1 = l0*thetaE_PM, l1*thetaE_PM
-            kwargs_lens_list = [{'center_x': eta0, 'center_y': eta1, 'theta_E': thetaE_PM}]
+            kwargs_lens_list = [{'center_x': lens_ra, 'center_y': lens_dec, 'theta_E': thetaE_PM}]
             solver_kwargs = {'SearchWindowMacro': 4*thetaE_PM,
                              'SearchWindow':      4*thetaE_PM,
                              'Optimization':      optim}
-            MacroImg_ra, MacroImg_dec, Macro_pixel_width = microimages(source_pos_x    = beta0,
-                                                                        source_pos_y    = beta1,
-                                                                        lens_model_list = lens_model_list,
-                                                                        kwargs_lens     = kwargs_lens_list,
-                                                                        **solver_kwargs)
+
+            MacroImg_ra, MacroImg_dec, Macro_pixel_width = microimages(source_pos_x = source_ra,
+                                                                    source_pos_y    = source_dec,
+                                                                    lens_model_list = lens_model_list,
+                                                                    kwargs_lens     = kwargs_lens_list,
+                                                                    **solver_kwargs)
             return MacroImg_ra, MacroImg_dec, beta0, beta1, zL, zS, eta0, eta1, lens_model_list, kwargs_lens_list
