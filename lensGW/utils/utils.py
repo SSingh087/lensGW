@@ -12,14 +12,43 @@ G               = const.G                                 # gravitational consta
 c               = const.c                                 # speed of light (m/s)
 
 def get_lensed_gws(Fmag, hpt, hct):
+    """
+    Computes lensed GW polarizations 
+    
+    :param F: frequency domain magnification factor :math:`F(f)`, must be computed on the same frequency band as *hptc* and *htc*
+    :type F: array
+    :param hpt: plus polarization :math:`\\tilde{h}_+(f)`
+    :type hpt: array
+    :param hct: cross polarization :math:`\\tilde{h}_{\\times}(f)`
+    :type hpct: array
+    :returns: lensed :math:`\\tilde{h}_+(f), \\tilde{h}_{\\times}(f)` and :math:`s`, computed from :math:`F(f)` and the unlensed quantities
+    :rtype: array, array, dict
+    """
         hp_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
         hc_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
         for i in range(len(Fmag)):
+        #frequecy is a bin shorter than the NR waveform 
+        #ref https://pycbc.org/pycbc/latest/html/pycbc.waveform.html#pycbc.waveform.utils.frequency_from_polarizations
             hp_lensed[i] = Fmag[i]*hpt.data[:-1]
             hc_lensed[i] = Fmag[i]*hct.data[:-1]
         return hp_lensed, hc_lensed
         
-def discardOverlaps(inarrX, inarrY, deltas, overlapDist):     
+def discardOverlaps(inarrX, inarrY, deltas, overlapDist):   
+    """
+    Deletes points in *inarrX* and *inarrY* whose distance is lower than *overlapDist* 
+    
+    :param inarrX: right ascensions of the points to check (arbitrary units)
+    :type inarrX: indexable object
+    :param inarrY: declinations of the points to check (arbitrary units)
+    :type inarrY: indexable object
+    :param deltas: source displacements of the points in *inarrX* and *inarrY* (arbitrary units)
+    :type deltas: indexable object
+    :param overlapDist: minimum distance for overlap removal
+    :type overlapDist: float
+    
+    :returns: new *inarrX*, *inarrY* and *deltas* which do not contain overlaps
+    :rtype: array, array, array
+    """
     ToBeRemoved_temp = []
     ToBeRemoved      = []
     
@@ -57,6 +86,34 @@ def zoom_function(source_pos_x,
                   gamma=2,
                   Npixels=30,
                   verbose=False):
+    """  
+    Zooms to finer grids: computes a new grid from the given specifications and selects pixels in it which could contain solutions of the lens equation
+    
+    :param source_pos_x: source right ascension (arbitrary units)
+    :type source_pos_x: float
+    :param source_pos_y: source declination (arbitrary units)
+    :type source_pos_y: float
+    :param grid_width: grid width before enlargement (arbitrary units)
+    :type grid_width: float
+    :param x_min: grid center right ascension (arbitrary units)
+    :type x_min: float
+    :param y_min: grid center right declination (arbitrary units)
+    :type y_min: float
+    :param ImgFrS: ray-shooting algorithm 
+    :type ImgFrS: instance of the ``lenstronomy``'s *LensModel* class
+    :param kwargs_lens: keyword arguments of the lens parameters matching each lens profile in the lens model
+    :type kwargs_lens: list of dictionaries
+    :param gamma: enlargement of the grid width: the grid width will be *grid_width* * *gamma*, *optional*. Default is :math:`2`
+    :type gamma: float
+    :param Npixels: number of pixels of the new grid, *optional*. Default is :math:`30`
+    :type Npixels: int
+    :param verbose: prints detailed diagnostic. *Optional*, default is *False*
+    :type verbose: bool
+      
+    :returns: right ascensions, declinations and source displacements of the pixels identified as candidate solutions (arbitrary units) and the pixel width  
+    :rtype: array, array, array, float
+    """
+
     search_window = grid_width*gamma
     min_distance  = search_window/Npixels    
     x_center      = x_min
@@ -74,6 +131,26 @@ def zoom_function(source_pos_x,
  
  
 def magnifications(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=None):
+    """     
+    Computes image magnifications for a given lens model 
+     
+    :param Img_ra: images right ascensions (arbitrary units)
+    :type Img_ra: array
+    :param Img_dec: images declinations (arbitrary units)
+    :type Img_dec: array
+    :param lens_model_list: names of the lens profiles to be considered for the lens model
+    :type lens_model_list: list of strings
+    :param kwargs_lens_list: keyword arguments of the lens parameters matching each lens profile in *lens_model_list*
+    :type kwargs_lens_list: list of dictionaries
+    :param diff: If set, computes the deflection as a finite numerical differential of the lensing
+     potential. This differential is only applicable in the single lensing plane where the form of the lensing
+     potential is analytically known. *Optional*, default is *None*
+    :type diff: None or float
+    
+    :returns: images magnifications
+    :rtype: array
+   
+    """   
     # instantiate the lens model
     lens_model = LensModel(lens_model_list=lens_model_list)
     
@@ -85,6 +162,36 @@ def magnifications(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=None
     
 
 def TimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_list, kwargs_lens_list, scaled=False, scale_factor=None, cosmo=None): 
+    """    
+    Computes image time delays for a given lens model 
+
+    :param Img_ra: images right ascensions (arbitrary units)
+    :type Img_ra: array
+    :param Img_dec: images declinations (arbitrary units)
+    :type Img_dec: array
+    :param source_pos_x: source right ascension (arbitrary units)
+    :type source_pos_x: float
+    :param source_pos_y: source declination (arbitrary units)
+    :type source_pos_y: float
+    :param zL: lens redshift
+    :type zL: float
+    :param zS: source redshift
+    :type zS: float
+    :param lens_model_list: names of the lens profiles to be considered for the lens model
+    :type lens_model_list: list of strings
+    :param kwargs_lens_list: keyword arguments of the lens parameters matching each lens profile in *lens_model_list*
+    :type kwargs_lens_list: list of dictionaries
+    :param scaled: specifies if the input is given in arbitrary units, *optional*. If not specified, the input is assumed to be in radians
+    :type scaled: bool
+    :param scale_factor: scale factor, *optional*. Used to account for the proper conversion factor in the time delays when coordinates are given in arbitrary units, as per :math:`x_{a.u.} = x_{radians}/scale\_factor`. Only considered when *scaled* is *True*
+    :type scale_factor: float
+    :param cosmo: cosmology used to compute angular diameter distances, *optional*. If not specified, a :math:`\\mathrm{FlatLambdaCDM}` instance with :math:`H_0=69.7, \Omega_0=0.306, T_{cmb0}=2.725` is considered
+    :type cosmo: instance of the astropy cosmology class
+    
+    :returns: time delay in seconds
+    :rtype: array
+        
+    """
     # set a default cosmology if not specified
     if cosmo is None:
         from astropy.cosmology import FlatLambdaCDM              
@@ -122,6 +229,40 @@ def TimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_li
     return td
     
 def NablaTimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_list, kwargs_lens_list, scaled=False, scale_factor=None, cosmo=None, diff=None): 
+
+    """    
+    Computes the gradient of the time delay (in seconds) for a given lens model 
+    
+    :param Img_ra: images right ascensions (arbitrary units)
+    :type Img_ra: array
+    :param Img_dec: images declinations (arbitrary units)
+    :type Img_dec: array
+    :param source_pos_x: source right ascension (arbitrary units)
+    :type source_pos_x: float
+    :param source_pos_y: source declination (arbitrary units)
+    :type source_pos_y: float
+    :param zL: lens redshift
+    :type zL: float
+    :param zS: source redshift
+    :type zS: float
+    :param lens_model_list: names of the lens profiles to be considered for the lens model
+    :type lens_model_list: list of strings
+    :param kwargs_lens_list: keyword arguments of the lens parameters matching each lens profile in *lens_model_list*
+    :type kwargs_lens_list: list of dictionaries
+    :param scaled: specifies if the input is given in arbitrary units, *optional*. If not specified, the input is assumed to be in radians
+    :type scaled: bool
+    :param scale_factor: scale factor, *optional*. Used to account for the proper conversion factor in the time delays when coordinates are given in arbitrary units, as per :math:`x_{a.u.} = x_{radians}/scale\_factor`. Only considered when *scaled* is *True*
+    :type scale_factor: float
+    :param cosmo: cosmology used to compute angular diameter distances, *optional*. If not specified, a :math:`\\mathrm{FlatLambdaCDM}` instance with :math:`H_0=69.7, \Omega_0=0.306, T_{cmb0}=2.725` is considered
+    :type cosmo: instance of the astropy cosmology class
+    :param diff: If set, computes the deflection as a finite numerical differential of the lensing
+     potential. This differential is only applicable in the single lensing plane where the form of the lensing
+     potential is analytically known. *Optional*, default is *None*
+    :type diff: None or float
+    
+    :returns: :math:`\\frac{\\partial t_d}{\\partial x_0},\\frac{\\partial t_d}{\\partial x_1}`
+    :rtype: array, array       
+    """
     # set a default cosmology if not specified
     if cosmo is None:
         from astropy.cosmology import FlatLambdaCDM              
@@ -162,6 +303,32 @@ def NablaTimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_mod
     return tdX, tdY
     
 def getMinMaxSaddle(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=None):
+
+    """
+    Implements the `second derivative test <https://calculus.subwiki.org/wiki/Second_derivative_test_for_a_function_of_two_variables>`_
+    to determine if images are minima, maxima or saddle points of the time delay
+    
+    :param Img_ra: images right ascensions (arbitrary units)
+    :type Img_ra: array
+    :param Img_dec: images declinations (arbitrary units)
+    :type Img_dec: array
+    :param lens_model_list: names of the lens profiles to be considered for the lens model
+    :type lens_model_list: list of strings
+    :param kwargs_lens_list: keyword arguments of the lens parameters matching each lens profile in *lens_model_list*
+    :type kwargs_lens_list: list of dictionaries
+    :param diff: If set, computes the deflection as a finite numerical differential of the lensing
+     potential. This differential is only applicable in the single lensing plane where the form of the lensing
+     potential is analytically known. *Optional*, default is *None*
+    :type diff: None or float
+        
+    :returns: list of Morse indices matching the images; :math:`0,1,1/2` if images are minima, maxima or saddle points respectively
+    :rtype: list
+    
+    Raises
+    ------
+    StandardError
+        If the test is inconclusive
+    """     
     # store the results of the test here
     res = []
     
@@ -205,9 +372,37 @@ def getMinMaxSaddle(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=Non
  
  
 def d2(p0,p1):
+    """
+    Finds the distance squared between two :math:`2d` points
+    
+    :param p0: coordinates of the first point
+    :type p0: :math:`2d` indexable object
+    :param p1: coordinates of the second point
+    :type p1: :math:`2d` indexable object
+    
+    :returns: the distance squared
+    :rtype: float
+    
+    """    
     return (p0[0]-p1[0])**2 + (p0[1]-p1[1])**2
     
 def param_processing(zL, zS, mL, cosmo=None):
+   """
+    Computes the Einstein radius of a given lens
+    
+    :param zL: lens redshift
+    :type zL: float
+    :param zS: source redshift
+    :type zS: float
+    :param mL: lens mass
+    :type mL: float
+    :param cosmo: cosmology used to compute angular diameter distances, *optional*. If not specified, a :math:`\\mathrm{FlatLambdaCDM}` instance with :math:`H_0=69.7, \Omega_0=0.306, T_{cmb0}=2.725` is considered
+    :type cosmo: instance of the astropy cosmology class
+    
+    :returns: the lens Einstein radius in radians, :math:`\\theta_E = \\sqrt{\\frac{4Gm_L}{c^2}\\frac{D_{LS}}{D_L D_S}}`
+    :rtype: float
+    """
+
     # set a default flat cosmology if not given
     if cosmo is None: 
         from astropy.cosmology import FlatLambdaCDM
