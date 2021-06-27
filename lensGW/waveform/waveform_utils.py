@@ -71,12 +71,12 @@ class lens_waveform_model(object):
                 solver_kwargs.update({'SearchWindow': 4*thetaE_PM[i]})
             solver_kwargs.update({'Optimization': optim})
 
-            Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width  = microimages(source_pos_x    = beta0,
-                                                                                   source_pos_y    = beta1,
-                                                                                   lens_model_list = lens_model_list,
-                                                                                   kwargs_lens     = kwargs_lens_list,
-                                                                                   **solver_kwargs)
-            return Img_ra, Img_dec, beta0, beta1, zL, zS, eta0, eta1, lens_model_list, kwargs_lens_list
+            Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width  = microimages(source_pos_x = source_ra,
+                                                                                source_pos_y    = source_dec,
+                                                                                lens_model_list = lens_model_list,
+                                                                                kwargs_lens     = kwargs_lens_list,
+                                                                                **solver_kwargs)
+            return MacroImg_ra, MacroImg_dec, kwargs_lens_list
 #-------------------------------------------------------------------------------------------
 
         elif len(mL)==1:
@@ -92,4 +92,4 @@ class lens_waveform_model(object):
                                                                     lens_model_list = lens_model_list,
                                                                     kwargs_lens     = kwargs_lens_list,
                                                                     **solver_kwargs)
-            return MacroImg_ra, MacroImg_dec, beta0, beta1, zL, zS, eta0, eta1, lens_model_list, kwargs_lens_list
+            return MacroImg_ra, MacroImg_dec, kwargs_lens_list
