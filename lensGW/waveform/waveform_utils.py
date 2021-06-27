@@ -36,10 +36,12 @@ class lens_waveform_model(object):
     :type source_ra: float
     :param source_dec: Declination of the source of GW (in radians)
     :type source_dec: float
-    :param lens_ra: Right accession of the source of GW (in radians)
+    :param lens_ra: Right accession of the lens (in radians)
     :type lens_ra: array
-    :param lens_dec: Declination of the source of GW (in radians)
+    :param lens_dec: Declination of the lens (in radians)
     :type lens_dec: array
+    :param mL: lens mass
+    :type mL: float
     :param zL: lens redshift
     :type zL: float
     :param zS: source redshift
