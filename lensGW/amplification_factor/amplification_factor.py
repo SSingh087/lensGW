@@ -2,7 +2,7 @@ import numpy as np
 from lensGW.utils.utils import TimeDelay, getMinMaxSaddle, magnifications
 
 def amplification_from_data(frequencies, mu, td, n):
-"""
+    """
     Computes the geometrical optics amplification :math:`F(f)` over a frequency band, given a set of magnifications, time delays and Morse indices
     
     :param frequencies: frequency band for the computation of the amplification factor

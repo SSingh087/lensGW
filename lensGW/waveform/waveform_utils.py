@@ -26,10 +26,10 @@ class lens_waveform_model(object):
         zL = self.param['zL']
         mL = self.param['mL']
         lens_model_list = self.param['lens_model_list']
-        return self.eval_param(y0,y1,l0,l1,zS,zL,mL,lens_model_list)
+        return self.eval_param(source_ra, source_dec, lens_ra, lens_dec, zS, zL, mL, lens_model_list)
         
     def eval_param(self, source_ra, source_dec, lens_ra, lens_dec, 
-                    zS, zL, mL, lens_model_list, optim='False'):
+                    zS, zL, mL, lens_model_list, optim='True'):
         """
         Finds lensed images for the given set of parameters
         :param source_ra: Right accession of the source of GW (in radians)
@@ -49,7 +49,7 @@ class lens_waveform_model(object):
         :param lens_model_list: names of the lens profiles to be considered for the lens model
         :type lens_model_list: list of strings
         :param optim: For optimization of search algorithm 
-        :type optim: Bool (default False)
+        :type optim: Bool (default True)
         """
     # SECTION BETWEEN --- THIS IS UNDER WORK IN PROGRESS
 #--------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ class lens_waveform_model(object):
 #-------------------------------------------------------------------------------------------
 
         elif len(mL)==1:
-            mL, l0, l1 = mL[0], l0[0], l1[0]
+            mL, lens_ra, lens_dec = mL[0], lens_ra[0], lens_dec[0]
             thetaE_PM = param_processing(zL, zS, mL)
             kwargs_lens_list = [{'center_x': lens_ra, 'center_y': lens_dec, 'theta_E': thetaE_PM}]
             solver_kwargs = {'SearchWindowMacro': 4*thetaE_PM,
