@@ -30,27 +30,27 @@ class lens_waveform_model(object):
         
     def eval_param(self, source_ra, source_dec, lens_ra, lens_dec, 
                     zS, zL, mL, lens_model_list, optim='False'):
-    """
-    Finds lensed images for the given set of parameters
-    :param source_ra: Right accession of the source of GW (in radians)
-    :type source_ra: float
-    :param source_dec: Declination of the source of GW (in radians)
-    :type source_dec: float
-    :param lens_ra: Right accession of the lens (in radians)
-    :type lens_ra: array
-    :param lens_dec: Declination of the lens (in radians)
-    :type lens_dec: array
-    :param mL: lens mass
-    :type mL: float
-    :param zL: lens redshift
-    :type zL: float
-    :param zS: source redshift
-    :type zS: float
-    :param lens_model_list: names of the lens profiles to be considered for the lens model
-    :type lens_model_list: list of strings
-    :param optim: For optimization of search algorithm 
-    :type optim: Bool (default False)
-    """
+        """
+        Finds lensed images for the given set of parameters
+        :param source_ra: Right accession of the source of GW (in radians)
+        :type source_ra: float
+        :param source_dec: Declination of the source of GW (in radians)
+        :type source_dec: float
+        :param lens_ra: Right accession of the lens (in radians)
+        :type lens_ra: array
+        :param lens_dec: Declination of the lens (in radians)
+        :type lens_dec: array
+        :param mL: lens mass
+        :type mL: float
+        :param zL: lens redshift
+        :type zL: float
+        :param zS: source redshift
+        :type zS: float
+        :param lens_model_list: names of the lens profiles to be considered for the lens model
+        :type lens_model_list: list of strings
+        :param optim: For optimization of search algorithm 
+        :type optim: Bool (default False)
+        """
     # SECTION BETWEEN --- THIS IS UNDER WORK IN PROGRESS
 #--------------------------------------------------------------------------------------------
         if len(mL)>1:
