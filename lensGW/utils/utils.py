@@ -24,14 +24,12 @@ def get_lensed_gws(Fmag, hpt, hct):
     :returns: lensed :math:`\\tilde{h}_+(f), \\tilde{h}_{\\times}(f)` and :math:`s`, computed from :math:`F(f)` and the unlensed quantities
     :rtype: array, array, dict
     """
-        hp_lensed = Fmag*hpt.data[:-1]
-        hc_lensed = Fmag*hct.data[:-1]
+    hp_lensed = Fmag*hpt.data[:-1]
+    hc_lensed = Fmag*hct.data[:-1]
 
-        #frequecy is a bin shorter than the NR waveform 
-        #ref https://pycbc.org/pycbc/latest/html/pycbc.waveform.html#pycbc.waveform.utils.frequency_from_polarizations
-            hp_lensed[i] = Fmag[i]*hpt.data[:-1]
-            hc_lensed[i] = Fmag[i]*hct.data[:-1]
-        return hp_lensed, hc_lensed
+    #frequecy is a bin shorter than the NR waveform 
+    #ref https://pycbc.org/pycbc/latest/html/pycbc.waveform.html#pycbc.waveform.utils.frequency_from_polarizations
+    return hp_lensed, hc_lensed
         
 def discardOverlaps(inarrX, inarrY, deltas, overlapDist):   
     """
@@ -386,7 +384,7 @@ def d2(p0,p1):
     return (p0[0]-p1[0])**2 + (p0[1]-p1[1])**2
     
 def param_processing(zL, zS, mL, cosmo=None):
-   """
+    """
     Computes the Einstein radius of a given lens
     
     :param zL: lens redshift

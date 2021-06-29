@@ -82,10 +82,10 @@ class lens_waveform_model(object):
             thetaE_PM = param_processing(zL, zS, mL)
             kwargs_lens_list = [{'center_x': lens_ra, 'center_y': lens_dec, 'theta_E': thetaE_PM/thetaE_PM}]
             solver_kwargs = {'Scaled'           : True, # indicate that the input is in scaled units 
-                             'ScaleFactor'      : thetaE, # and the scale factor  
+                             'ScaleFactor'      : thetaE_PM, # and the scale factor  
                              'SearchWindowMacro': 4*thetaE_PM/thetaE_PM,
                              'SearchWindow'     : 4*thetaE_PM/thetaE_PM,
-                             'OnlyMacro'        : 'False'
+                             'OnlyMacro'        : 'False',
                              'Optimization'     : optim}
 
             Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width = microimages(source_pos_x = source_ra,

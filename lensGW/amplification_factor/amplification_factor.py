@@ -17,7 +17,7 @@ def amplification_from_data(frequencies, mu, td, n):
     :returns: :math:`F(f)`
     :rtype: array
     """
-    Fmag = np.zeros(len(frequencies)), dtype=np.complex128)
+    Fmag = np.zeros(len(frequencies), dtype=np.complex128)
     for i in range(len(mu)):
         #frequecy is a bin shorter than the NR waveform thus so will be Fmag
         #ref https://pycbc.org/pycbc/latest/html/pycbc.waveform.html#pycbc.waveform.utils.frequency_from_polarizations
