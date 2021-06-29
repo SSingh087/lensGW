@@ -24,9 +24,9 @@ def get_lensed_gws(Fmag, hpt, hct):
     :returns: lensed :math:`\\tilde{h}_+(f), \\tilde{h}_{\\times}(f)` and :math:`s`, computed from :math:`F(f)` and the unlensed quantities
     :rtype: array, array, dict
     """
-        hp_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
-        hc_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
-        for i in range(len(Fmag)):
+        hp_lensed = Fmag*hpt.data[:-1]
+        hc_lensed = Fmag*hct.data[:-1]
+
         #frequecy is a bin shorter than the NR waveform 
         #ref https://pycbc.org/pycbc/latest/html/pycbc.waveform.html#pycbc.waveform.utils.frequency_from_polarizations
             hp_lensed[i] = Fmag[i]*hpt.data[:-1]

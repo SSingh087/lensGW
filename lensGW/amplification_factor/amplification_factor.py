@@ -17,12 +17,11 @@ def amplification_from_data(frequencies, mu, td, n):
     :returns: :math:`F(f)`
     :rtype: array
     """
-    Fmag = np.zeros((len(mu), len(frequencies)), dtype=np.complex128)
+    Fmag = np.zeros(len(frequencies)), dtype=np.complex128)
     for i in range(len(mu)):
-        #frequecy is a bin shorter than the NR waveform 
+        #frequecy is a bin shorter than the NR waveform thus so will be Fmag
         #ref https://pycbc.org/pycbc/latest/html/pycbc.waveform.html#pycbc.waveform.utils.frequency_from_polarizations
-
-        Fmag[i] = np.sqrt(np.abs(mu[i]))* np.exp(1j*np.pi*(2.*frequencies*td[i] - n[i]))
+        Fmag += np.sqrt(np.abs(mu[i]))* np.exp(1j*np.pi*(2.*frequencies*td[i] - n[i]))
     return Fmag
 
 def geometricalOpticsMagnification(frequencies,
@@ -69,8 +68,6 @@ def geometricalOpticsMagnification(frequencies,
     
     :returns: 
     :math:`F(f)`
-    :rtype: array
-    :td: time delays
     :rtype: array
     """
     

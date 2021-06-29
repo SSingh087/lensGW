@@ -15,14 +15,14 @@ def OneDeflector(source_pos_x,
     start = time.time() 
     
     # default solverKwargs
-    solverKwargs = {'Scaled'           : False,
-                    'ScaleFactor'      : 1,
-                    'SearchWindowMacro': None,
+    solverKwargs = {'Scaled'           : kwargs['Scaled'],
+                    'ScaleFactor'      : kwargs['ScaleFactor'],
+                    'SearchWindowMacro': kwargs['SearchWindowMacro'],
                     'PixelsMacro'      : 10**3,
                     'PrecisionLimit'   : 10**(-20),
                     'OverlapDistMacro' : 10**(-15), # prescription: solutions whose distance is less than 10**(-15) rad (\sim 2*1.e-4 micro arcsec) are considered overlaps
                     'NearSource'       : False,
-                    'Optimization'     : False,
+                    'Optimization'     : kwargs['Optimization'],
                     'Verbose'          : False} 
     
     # kwargs that need rescaling if Scaled is True
@@ -286,7 +286,7 @@ def microimages(source_pos_x,
     if solverKwargs['SearchWindow'] is None and not only_macro:
             sys.stderr.write('\n\nMust specify a search window for the complete model to perform the analysis\n')
             sys.stderr.write('Aborting\n')
-            exit(-1)    
+            exit(-1)
         
     #if only_macro:
         #sys.stdout.write('\n---- Will perform only the macromodel analysis ----\n')
