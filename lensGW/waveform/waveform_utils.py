@@ -85,12 +85,12 @@ class lens_waveform_model(object):
                              'ScaleFactor'      : thetaE_PM, # and the scale factor  
                              'SearchWindowMacro': 4*thetaE_PM/thetaE_PM,
                              'SearchWindow'     : 4*thetaE_PM/thetaE_PM,
-                             'OnlyMacro'        : 'True',
+                             'OnlyMacro'        : 'False',
                              'Optimization'     : optim}
 
-            MacroImg_ra, MacroImg_dec, Macro_pixel_width = microimages(source_pos_x = source_ra,
+            Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width = microimages(source_pos_x = source_ra,
                                                                     source_pos_y    = source_dec,
                                                                     lens_model_list = lens_model_list,
                                                                     kwargs_lens     = kwargs_lens_list,
                                                                     **solver_kwargs)
-        return MacroImg_ra, MacroImg_dec, kwargs_lens_list, solver_kwargs
+        return Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, kwargs_lens_list, solver_kwargs
