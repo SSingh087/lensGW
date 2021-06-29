@@ -29,7 +29,7 @@ class lens_waveform_model(object):
         return self.eval_param(source_ra, source_dec, lens_ra, lens_dec, zS, zL, mL, lens_model_list)
         
     def eval_param(self, source_ra, source_dec, lens_ra, lens_dec, 
-                    zS, zL, mL, lens_model_list, optim='True'):
+                    zS, zL, mL, lens_model_list, optim):
         """
         Finds lensed images for the given set of parameters
         :param source_ra: Right accession of the source of GW (in radians)
@@ -49,7 +49,7 @@ class lens_waveform_model(object):
         :param lens_model_list: names of the lens profiles to be considered for the lens model
         :type lens_model_list: list of strings
         :param optim: For optimization of search algorithm 
-        :type optim: Bool (default True)
+        :type optim: Bool 
         """
     # SECTION BETWEEN --- THIS IS UNDER WORK IN PROGRESS
 #--------------------------------------------------------------------------------------------
@@ -76,20 +76,21 @@ class lens_waveform_model(object):
                                                                                 lens_model_list = lens_model_list,
                                                                                 kwargs_lens     = kwargs_lens_list,
                                                                                 **solver_kwargs)
-            return MacroImg_ra, MacroImg_dec, kwargs_lens_list
 #-------------------------------------------------------------------------------------------
-
         elif len(mL)==1:
             mL, lens_ra, lens_dec = mL[0], lens_ra[0], lens_dec[0]
             thetaE_PM = param_processing(zL, zS, mL)
-            kwargs_lens_list = [{'center_x': lens_ra, 'center_y': lens_dec, 'theta_E': thetaE_PM}]
-            solver_kwargs = {'SearchWindowMacro': 4*thetaE_PM,
-                             'SearchWindow':      4*thetaE_PM,
-                             'Optimization':      optim}
+            kwargs_lens_list = [{'center_x': lens_ra, 'center_y': lens_dec, 'theta_E': thetaE_PM/thetaE_PM}]
+            solver_kwargs = {'Scaled'           : True, # indicate that the input is in scaled units 
+                             'ScaleFactor'      : thetaE, # and the scale factor  
+                             'SearchWindowMacro': 4*thetaE_PM/thetaE_PM,
+                             'SearchWindow'     : 4*thetaE_PM/thetaE_PM,
+                             'OnlyMacro'        : 'False'
+                             'Optimization'     : optim}
 
-            MacroImg_ra, MacroImg_dec, Macro_pixel_width = microimages(source_pos_x = source_ra,
+            Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width = microimages(source_pos_x = source_ra,
                                                                     source_pos_y    = source_dec,
                                                                     lens_model_list = lens_model_list,
                                                                     kwargs_lens     = kwargs_lens_list,
                                                                     **solver_kwargs)
-            return MacroImg_ra, MacroImg_dec, kwargs_lens_list
+        return Img_ra, Img_dec, MacroImg_ra, MacroImg_dec

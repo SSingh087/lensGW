@@ -245,16 +245,16 @@ def microimages(source_pos_x,
     import time 
     
     # default kwargs for the complete model
-    solverKwargs = {'Scaled'           : False,  
-                    'ScaleFactor'      : 1,    
-                    'OnlyMacro'        : False, 
+    solverKwargs = {'Scaled'           : kwargs['Scaled'],  
+                    'ScaleFactor'      : kwargs['ScaleFactor'],    
+                    'OnlyMacro'        : kwargs['OnlyMacro'], 
                     'MacroIndex'       : [0],                
                     'ImgIndex'         : None,  
-                    'SearchWindow'     : None,  
+                    'SearchWindow'     : kwargs['SearchWindow'],
                     'Pixels'           : 10**3, 
                     'OverlapDist'      : 10**(-15), 
                     'PrecisionLimit'   : 10**(-20), 
-                    'Optimization'     : False, 
+                    'Optimization'     : kwargs['Optimization'],
                     'Verbose'          : False} 
     
     # kwargs that need rescaling if Scaled is True

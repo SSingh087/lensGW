@@ -24,14 +24,14 @@ def get_lensed_gws(Fmag, hpt, hct):
     :returns: lensed :math:`\\tilde{h}_+(f), \\tilde{h}_{\\times}(f)` and :math:`s`, computed from :math:`F(f)` and the unlensed quantities
     :rtype: array, array, dict
     """
-    hp_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
-    hc_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
-    for i in range(len(Fmag)):
-    #frequecy is a bin shorter than the NR waveform 
-    #ref https://pycbc.org/pycbc/latest/html/pycbc.waveform.html#pycbc.waveform.utils.frequency_from_polarizations
-        hp_lensed[i] = Fmag[i]*hpt.data[:-1]
-        hc_lensed[i] = Fmag[i]*hct.data[:-1]
-    return hp_lensed, hc_lensed
+        hp_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
+        hc_lensed = np.zeros((len(Fmag), len(Fmag[0])), dtype=np.float64)
+        for i in range(len(Fmag)):
+        #frequecy is a bin shorter than the NR waveform 
+        #ref https://pycbc.org/pycbc/latest/html/pycbc.waveform.html#pycbc.waveform.utils.frequency_from_polarizations
+            hp_lensed[i] = Fmag[i]*hpt.data[:-1]
+            hc_lensed[i] = Fmag[i]*hct.data[:-1]
+        return hp_lensed, hc_lensed
         
 def discardOverlaps(inarrX, inarrY, deltas, overlapDist):   
     """
@@ -156,7 +156,6 @@ def magnifications(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=None
     
     # magnifications
     mu = lens_model.magnification(Img_ra, Img_dec, kwargs_lens_list, diff=diff)
-    
     
     return mu
     
@@ -387,7 +386,7 @@ def d2(p0,p1):
     return (p0[0]-p1[0])**2 + (p0[1]-p1[1])**2
     
 def param_processing(zL, zS, mL, cosmo=None):
-    """
+   """
     Computes the Einstein radius of a given lens
     
     :param zL: lens redshift
@@ -403,6 +402,7 @@ def param_processing(zL, zS, mL, cosmo=None):
     :rtype: float
     """
 
+    # set a default flat cosmology if not given
     if cosmo is None: 
         from astropy.cosmology import FlatLambdaCDM
         cosmo = FlatLambdaCDM(H0=69.7, Om0=0.306, Tcmb0=2.725)
