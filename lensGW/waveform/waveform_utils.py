@@ -83,14 +83,14 @@ class lens_waveform_model(object):
             kwargs_lens_list = [{'center_x': lens_ra, 'center_y': lens_dec, 'theta_E': thetaE_PM/thetaE_PM}]
             solver_kwargs = {'Scaled'           : True, # indicate that the input is in scaled units 
                              'ScaleFactor'      : thetaE_PM, # and the scale factor  
-                             'SearchWindowMacro': 4*thetaE_PM/thetaE_PM,
-                             'SearchWindow'     : 4*thetaE_PM/thetaE_PM,
+                             'SearchWindowMacro': 8*thetaE_PM/thetaE_PM,
+                             'SearchWindow'     : 8*thetaE_PM/thetaE_PM,
                              'OnlyMacro'        : 'False',
                              'Optimization'     : optim}
 
             Img_ra, Img_dec, pixel_width = microimages(source_pos_x = source_ra,
-                                                                    source_pos_y    = source_dec,
-                                                                    lens_model_list = lens_model_list,
-                                                                    kwargs_lens     = kwargs_lens_list,
-                                                                    **solver_kwargs)
+                                                        source_pos_y    = source_dec,
+                                                        lens_model_list = lens_model_list,
+                                                        kwargs_lens     = kwargs_lens_list,
+                                                        **solver_kwargs)
         return Img_ra, Img_dec, kwargs_lens_list, solver_kwargs
