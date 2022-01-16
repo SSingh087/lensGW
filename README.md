@@ -1,2 +1,2 @@
-TESTING ..
-change url in `setup.py`
+# Dependencies for LensGW
+![alt text](https://github.com/SSingh087/lensGW/blob/main/lensGW.png)
