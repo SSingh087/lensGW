@@ -2,8 +2,8 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lensGW.utils.utils import *
 import sys
  
-def lens_eq_solutions(source_pos_x,
-                      source_pos_y,
+def lens_eq_solutions(source_ra,
+                      source_dec,
                       x_center,
                       y_center,
                       search_window,
@@ -62,8 +62,8 @@ def lens_eq_solutions(source_pos_x,
     
     # find the pixels' centers which minimize locally the displacement (delta_map) w.r.t. the source position
     # returns the pixel width as an input for the iteration    
-    x_mins, y_mins, delta_map, pixel_width = ImgFrS.candidate_solutions(sourcePos_x   = source_pos_x,
-                                                                        sourcePos_y   = source_pos_y,
+    x_mins, y_mins, delta_map, pixel_width = ImgFrS.candidate_solutions(sourcePos_x   = source_ra,
+                                                                        sourcePos_y   = source_dec,
                                                                         kwargs_lens   = kwargs_lens,
                                                                         min_distance  = min_distance,
                                                                         search_window = search_window,
@@ -91,7 +91,6 @@ def lens_eq_solutions(source_pos_x,
 
     # check if the pixel size safety threshold has been reached and stop the iteration in that case
     if (pixel_width<10**(-25)/scale_factor):
-        #sys.stdout.write('\n\nMinumum pixel size reached. The iteration will be stopped.\n\n')
         non_stop = False 
      
     # iterate on the promising tiles otherwise
@@ -170,8 +169,8 @@ def lens_eq_solutions(source_pos_x,
         delta_map   = []
 
         for k in range(len(check_minsRA)): 
-            temp_zoom = zoom_function(source_pos_x = source_pos_x,
-                                      source_pos_y = source_pos_y,
+            temp_zoom = zoom_function(source_ra = source_ra,
+                                      source_dec = source_dec,
                                       grid_width   = pixel_width, 
                                       x_min        = check_minsRA[k],
                                       y_min        = check_minsDEC[k],

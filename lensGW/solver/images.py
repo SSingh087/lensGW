@@ -4,8 +4,8 @@ from lensGW.solver.solver import lens_eq_solutions
 from lenstronomy.LensModel.lens_model import LensModel  
 from lensGW.utils.utils import discardOverlaps
 
-def OneDeflector(source_pos_x,
-                 source_pos_y,
+def OneDeflector(source_ra,
+                 source_dec,
                  lens_model_list,
                  kwargs_lens,
                  **kwargs):
@@ -108,10 +108,10 @@ def OneDeflector(source_pos_x,
      
     # solve for the images of the macromodel
     #if solverKwargs['Verbose']: sys.stdout.write('\n---- Macromodel analysis ----\n')
-    prev_Img_ra, prev_Img_dec, pixel_width = lens_eq_solutions(source_pos_x  = source_pos_x,
-                                                               source_pos_y  = source_pos_y,
-                                                               x_center      = source_pos_x,
-                                                               y_center      = source_pos_y,
+    prev_Img_ra, prev_Img_dec, pixel_width = lens_eq_solutions(source_ra  = source_ra,
+                                                               source_dec  = source_dec,
+                                                               x_center      = source_ra,
+                                                               y_center      = source_dec,
                                                                search_window = search_window_m,
                                                                min_distance  = min_distance_m,
                                                                lens_model    = lens_model,
@@ -170,10 +170,10 @@ def OneDeflector(source_pos_x,
             
         # check for images very close to the source, which may have been missed when images' displacements are wide
         if solverKwargs['Verbose']: sys.stdout.write('\n---- Near Source analysis ----\n')
-        prev_Img_ra_ns, prev_Img_dec_ns, pixel_width_ns = lens_eq_solutions(source_pos_x  = source_pos_x,
-                                                                            source_pos_y  = source_pos_y,
-                                                                            x_center      = source_pos_x,
-                                                                            y_center      = source_pos_y,
+        prev_Img_ra_ns, prev_Img_dec_ns, pixel_width_ns = lens_eq_solutions(source_ra  = source_ra,
+                                                                            source_dec  = source_dec,
+                                                                            x_center      = source_ra,
+                                                                            y_center      = source_dec,
                                                                             search_window = search_window_ns,
                                                                             min_distance  = min_distance_ns,
                                                                             lens_model    = lens_model,
@@ -237,8 +237,8 @@ def OneDeflector(source_pos_x,
 
     
     
-def microimages(source_pos_x,
-                source_pos_y,
+def microimages(source_ra,
+                source_dec,
                 lens_model_list,
                 kwargs_lens,
                 **kwargs):
@@ -298,8 +298,8 @@ def microimages(source_pos_x,
     macromodel_list   = [lens_model_list[index] for index in macro_index]
     macromodel_kwargs = [kwargs_lens[index] for index in macro_index]
 
-    MacroImg_ra, MacroImg_dec, Macro_pixel_width = OneDeflector(source_pos_x    = source_pos_x,
-                                                                 source_pos_y    = source_pos_y,
+    MacroImg_ra, MacroImg_dec, Macro_pixel_width = OneDeflector(source_ra    = source_ra,
+                                                                 source_dec    = source_dec,
                                                                  lens_model_list = macromodel_list,
                                                                  kwargs_lens     = macromodel_kwargs,
                                                                  **solverKwargs)   
@@ -390,8 +390,8 @@ def microimages(source_pos_x,
             center_x     = x0
             center_y     = x1
 
-            temp_Img_ra, temp_Img_dec, pixel_width = lens_eq_solutions(source_pos_x  = source_pos_x,
-                                                                       source_pos_y  = source_pos_y,
+            temp_Img_ra, temp_Img_dec, pixel_width = lens_eq_solutions(source_ra  = source_ra,
+                                                                       source_dec  = source_dec,
                                                                        x_center      = center_x,
                                                                        y_center      = center_y,
                                                                        search_window = search_window,

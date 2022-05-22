@@ -73,8 +73,8 @@ def discardOverlaps(inarrX, inarrY, deltas, overlapDist):
 
     return inarrX, inarrY, deltas
  
-def zoom_function(source_pos_x,
-                  source_pos_y,
+def zoom_function(source_ra,
+                  source_dec,
                   grid_width,
                   x_min,
                   y_min,
@@ -86,10 +86,10 @@ def zoom_function(source_pos_x,
     """  
     Zooms to finer grids: computes a new grid from the given specifications and selects pixels in it which could contain solutions of the lens equation
     
-    :param source_pos_x: source right ascension (arbitrary units)
-    :type source_pos_x: float
-    :param source_pos_y: source declination (arbitrary units)
-    :type source_pos_y: float
+    :param source_ra: source right ascension (arbitrary units)
+    :type source_ra: float
+    :param source_dec: source declination (arbitrary units)
+    :type source_dec: float
     :param grid_width: grid width before enlargement (arbitrary units)
     :type grid_width: float
     :param x_min: grid center right ascension (arbitrary units)
@@ -116,8 +116,8 @@ def zoom_function(source_pos_x,
     x_center      = x_min
     y_center      = y_min
     
-    res           = ImgFrS.candidate_solutions(sourcePos_x = source_pos_x,
-                                               sourcePos_y = source_pos_y,
+    res           = ImgFrS.candidate_solutions(sourcePos_x = source_ra,
+                                               sourcePos_y = source_dec,
                                                kwargs_lens         = kwargs_lens,
                                                min_distance        = min_distance,
                                                search_window       = search_window,
@@ -157,7 +157,7 @@ def magnifications(Img_ra, Img_dec, lens_model_list, kwargs_lens_list, diff=None
     return mu
     
 
-def TimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_list, kwargs_lens_list, scaled=False, scale_factor=None, cosmo=None): 
+def TimeDelay(Img_ra, Img_dec, source_ra, source_dec, zL, zS, lens_model_list, kwargs_lens_list, scaled=False, scale_factor=None, cosmo=None): 
     """    
     Computes image time delays for a given lens model 
 
@@ -165,10 +165,10 @@ def TimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_li
     :type Img_ra: array
     :param Img_dec: images declinations (arbitrary units)
     :type Img_dec: array
-    :param source_pos_x: source right ascension (arbitrary units)
-    :type source_pos_x: float
-    :param source_pos_y: source declination (arbitrary units)
-    :type source_pos_y: float
+    :param source_ra: source right ascension (arbitrary units)
+    :type source_ra: float
+    :param source_dec: source declination (arbitrary units)
+    :type source_dec: float
     :param zL: lens redshift
     :type zL: float
     :param zS: source redshift
@@ -203,7 +203,7 @@ def TimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_li
     D          = DLS/(DL*DS)
     D          = np.float64(D/(Mpc))
     prefactor  = (1+zL)/(D*c)
-    shift2     = (Img_ra-source_pos_x)**2+(Img_dec-source_pos_y)**2
+    shift2     = (Img_ra-source_ra)**2+(Img_dec-source_dec)**2
     potential  = 0.0
 
     # compute the time delay, Eq. 6 of Diego et al https://www.aanda.org/articles/aa/pdf/2019/07/aa35490-19.pdf
@@ -224,7 +224,7 @@ def TimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_li
         
     return td
     
-def NablaTimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_model_list, kwargs_lens_list, scaled=False, scale_factor=None, cosmo=None, diff=None): 
+def NablaTimeDelay(Img_ra, Img_dec, source_ra, source_dec, zL, zS, lens_model_list, kwargs_lens_list, scaled=False, scale_factor=None, cosmo=None, diff=None): 
 
     """    
     Computes the gradient of the time delay (in seconds) for a given lens model 
@@ -233,10 +233,10 @@ def NablaTimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_mod
     :type Img_ra: array
     :param Img_dec: images declinations (arbitrary units)
     :type Img_dec: array
-    :param source_pos_x: source right ascension (arbitrary units)
-    :type source_pos_x: float
-    :param source_pos_y: source declination (arbitrary units)
-    :type source_pos_y: float
+    :param source_ra: source right ascension (arbitrary units)
+    :type source_ra: float
+    :param source_dec: source declination (arbitrary units)
+    :type source_dec: float
     :param zL: lens redshift
     :type zL: float
     :param zS: source redshift
@@ -271,8 +271,8 @@ def NablaTimeDelay(Img_ra, Img_dec, source_pos_x, source_pos_y, zL, zS, lens_mod
     D          = DLS/(DL*DS)
     D          = np.float64(D/(Mpc))
     prefactor  = (1+zL)/(D*c)
-    shiftX     = Img_ra-source_pos_x
-    shiftY     = Img_dec-source_pos_y
+    shiftX     = Img_ra-source_ra
+    shiftY     = Img_dec-source_dec
     psiX       = 0.0
     psiY       = 0.0
     
@@ -382,7 +382,7 @@ def d2(p0,p1):
     """    
     return (p0[0]-p1[0])**2 + (p0[1]-p1[1])**2
     
-def param_processing(zL, zS, mL, cosmo=None):
+def eval_Einstein_radius(zL, zS, mL, cosmo=None):
     """
     Computes the Einstein radius of a given lens
     
