@@ -77,26 +77,27 @@ def OneDeflector(source_ra,
                 value = optimizationKwargs[key]
                 solverKwargs.update({key: value})
                 
-    # print them out    
+    # @echo silet 
+
     #sys.stdout.write('\n---- Solver settings ----\n\nThe macromodel analysis will be performed with the following settings:\n\n')
-    if solverKwargs['Optimization']:  
-        try:
-            key = 'OnlyMacro'
-            #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),kwargs[key]))
-        except: pass
-        for key, value in solverKwargs.items():
-            if key != 'ScaleFactor' or (key == 'ScaleFactor' and solverKwargs['Scaled']):
-                if key == 'PrecisionLimit'and solverKwargs['Optimization']: pass
-                #else:
-                    #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),value))
-    else:
-        try:
-            key = 'OnlyMacro'
-            #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWindowMacro')),kwargs[key]))
-        except: pass
-        #for key, value in solverKwargs.items():
-            #if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
-                #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWindowMacro')),value))
+    #if solverKwargs['Optimization']:  
+    #    try:
+    #        key = 'OnlyMacro'
+    #        sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),kwargs[key]))
+    #    except: pass
+    #    for key, value in solverKwargs.items():
+    #        if key != 'ScaleFactor' or (key == 'ScaleFactor' and solverKwargs['Scaled']):
+    #            if key == 'PrecisionLimit'and solverKwargs['Optimization']: pass
+    #            else:
+    #                #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),value))
+    #else:
+    #    try:
+    #        key = 'OnlyMacro'
+    #        sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWindowMacro')),kwargs[key]))
+    #    except: pass
+    #    for key, value in solverKwargs.items():
+    #        if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
+    #            sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWindowMacro')),value))
     #sys.stdout.write('\n')
 
     # parse the remaining relevant arguments 
@@ -155,14 +156,14 @@ def OneDeflector(source_ra,
                 
         #sys.stdout.write('\n---- Solver settings for the analysis near source ----\n\nThe near source analysis will be performed with the following settings:\n\n')
         #if NearSourceKwargs['Optimization']:  
-          #  for key, value in NearSourceKwargs.items():
-         #       if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
-                    #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),value))
+        #    for key, value in NearSourceKwargs.items():
+        #        if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
+        #            #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),value))
         #else:
-            #for key, value in NearSourceKwargs.items():
-                #if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
-                    #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWinodwNearSource')),value))
-        sys.stdout.write('\n')     
+        #    for key, value in NearSourceKwargs.items():
+        #        if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
+        #           sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWinodwNearSource')),value))
+        #sys.stdout.write('\n')     
         
         # parse the remaining relevant arguments
         search_window_ns = NearSourceKwargs['SearchWindowNearSource']
@@ -421,11 +422,11 @@ def microimages(source_ra,
             exit()
             
         #else:
-            #sys.stdout.write('\n')
-            #sys.stdout.write('\n\nIMAGES OF THE COMPLETE MODEL\n\n')
-            #sys.stdout.write('ra: {0}\n'.format(Img_ra))
-            #sys.stdout.write('dec: {0}\n'.format(Img_dec))
-            #sys.stdout.write('\n')
+        #   sys.stdout.write('\n')
+        #   sys.stdout.write('\n\nIMAGES OF THE COMPLETE MODEL\n\n')
+        #   sys.stdout.write('ra: {0}\n'.format(Img_ra))
+        #   sys.stdout.write('dec: {0}\n'.format(Img_dec))
+        #   sys.stdout.write('\n')
             
         end = time.time() 
         if solverKwargs['Verbose']: sys.stdout.write('Elapsed time: {0} seconds\n\n'.format(end-start)) 
