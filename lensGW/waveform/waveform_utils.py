@@ -74,4 +74,5 @@ class lens_waveform_model():
                                                         lens_model_list = lens_model_list,
                                                         kwargs_lens     = kwargs_lens_list,
                                                         **solver_kwargs)
-        return Img_ra, Img_dec, kwargs_lens_list, solver_kwargs
+
+            return Img_ra, Img_dec, kwargs_lens_list, solver_kwargs

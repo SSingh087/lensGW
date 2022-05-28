@@ -10,10 +10,6 @@ def OneDeflector(source_ra,
                  kwargs_lens,
                  **kwargs):
 
-    # see how long it takes to perform the computation
-    import time 
-    start = time.time() 
-    
     # default solverKwargs
     solverKwargs = {'Scaled'           : kwargs['Scaled'],
                     'ScaleFactor'      : kwargs['ScaleFactor'],
@@ -44,8 +40,7 @@ def OneDeflector(source_ra,
     
     if solverKwargs['SearchWindowMacro'] is None:
         sys.stderr.write('\n\nMust specify a search window for the macromodel to perform the analysis\n')
-        sys.stderr.write('Aborting\n')
-        exit(-1)
+        return None, None, None
      
     # repeat for the optimization-related settings if the optimization mode is active
     if solverKwargs['Optimization']:                           
@@ -77,29 +72,6 @@ def OneDeflector(source_ra,
                 value = optimizationKwargs[key]
                 solverKwargs.update({key: value})
                 
-    # @echo silet 
-
-    #sys.stdout.write('\n---- Solver settings ----\n\nThe macromodel analysis will be performed with the following settings:\n\n')
-    #if solverKwargs['Optimization']:  
-    #    try:
-    #        key = 'OnlyMacro'
-    #        sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),kwargs[key]))
-    #    except: pass
-    #    for key, value in solverKwargs.items():
-    #        if key != 'ScaleFactor' or (key == 'ScaleFactor' and solverKwargs['Scaled']):
-    #            if key == 'PrecisionLimit'and solverKwargs['Optimization']: pass
-    #            else:
-    #                #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),value))
-    #else:
-    #    try:
-    #        key = 'OnlyMacro'
-    #        sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWindowMacro')),kwargs[key]))
-    #    except: pass
-    #    for key, value in solverKwargs.items():
-    #        if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
-    #            sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWindowMacro')),value))
-    #sys.stdout.write('\n')
-
     # parse the remaining relevant arguments 
     search_window_m  = solverKwargs['SearchWindowMacro']    
     min_distance_m   = solverKwargs['SearchWindowMacro']/solverKwargs['PixelsMacro']
@@ -107,8 +79,6 @@ def OneDeflector(source_ra,
     # instantiate the lens model
     lens_model  = LensModel(lens_model_list=lens_model_list)
      
-    # solve for the images of the macromodel
-    #if solverKwargs['Verbose']: sys.stdout.write('\n---- Macromodel analysis ----\n')
     prev_Img_ra, prev_Img_dec, pixel_width = lens_eq_solutions(source_ra  = source_ra,
                                                                source_dec  = source_dec,
                                                                x_center      = source_ra,
@@ -119,19 +89,11 @@ def OneDeflector(source_ra,
                                                                kwargs_lens   = kwargs_lens,
                                                                macromodel    = True,
                                                                **solverKwargs) 
-    # sanity check on the number of solutions
-    #sys.stdout.write('\n')
+
     if len(prev_Img_ra)==0 and solverKwargs['NearSource'] == False:
-        sys.stderr.write('\n\nNo images found for the macromodel, try different settings\n')
-        sys.stderr.write('Aborting\n')
-        exit(-1)
-    #elif len(prev_Img_ra) is not 0:   
-        #sys.stdout.write('\n\nMACROIMAGES\n\n')
-        #sys.stdout.write('ra: {0}\n'.format(prev_Img_ra))
-        #sys.stdout.write('dec: {0}\n'.format(prev_Img_dec))
-        #sys.stdout.write('\n')
-    
-    # repeat for the NearSource-related settings if NearSource == True
+        sys.stderr.write('\nNo images found for the macromodel, try different settings\n')
+        return None, None, None
+
     if solverKwargs['NearSource']:
         NearSourceKwargs = {'SearchWindowNearSource': None,
                             'PixelsNearSource': 10**3}
@@ -145,25 +107,13 @@ def OneDeflector(source_ra,
         # sanity check on the window near source
         if NearSourceKwargs['SearchWindowNearSource'] is None:
             sys.stderr.write('\n\nMust specify a value for the search window near the source')
-            sys.stderr.write('Aborting\n')
-            exit(-1)
+            return None, None, None
                 
         # update NearSourceKwargs with solverKwargs
         for key in solverKwargs.keys():
             if key != 'SearchWindowMacro' and key != 'PixelsMacro':
                 value = solverKwargs[key]
                 NearSourceKwargs.update({key: value})
-                
-        #sys.stdout.write('\n---- Solver settings for the analysis near source ----\n\nThe near source analysis will be performed with the following settings:\n\n')
-        #if NearSourceKwargs['Optimization']:  
-        #    for key, value in NearSourceKwargs.items():
-        #        if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
-        #            #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),value))
-        #else:
-        #    for key, value in NearSourceKwargs.items():
-        #        if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
-        #           sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('SearchWinodwNearSource')),value))
-        #sys.stdout.write('\n')     
         
         # parse the remaining relevant arguments
         search_window_ns = NearSourceKwargs['SearchWindowNearSource']
@@ -184,13 +134,6 @@ def OneDeflector(source_ra,
                                                                             
         # append to the previous solutions if there are new ones, then discard the overlaps  
         if len(prev_Img_ra_ns)>0:
-        
-            #sys.stdout.write('\n')
-            #sys.stdout.write('\n\nMACROIMAGES FOUND BY THE NEAR SOURCE CHECK\n\n')
-            #sys.stdout.write('ra: {0}\n'.format(prev_Img_ra))
-            #sys.stdout.write('dec: {0}\n'.format(prev_Img_dec))
-            #sys.stdout.write('\n')
-            #sys.stdout.write('\n-----------------------------\n')
             
             prev_Img_ra  = list(prev_Img_ra)
             prev_Img_dec = list(prev_Img_dec)
@@ -218,22 +161,9 @@ def OneDeflector(source_ra,
     
     # sanity check on the number of solutions
     if len(Img_ra)==0:
-        sys.stderr.write('\n\nNo images found for the macromodel, try different settings\n')
-        sys.stderr.write('Aborting\n')
-        exit()
-    
-    #else:
-        #if solverKwargs['NearSource']:
-            #sys.stdout.write('\n')
-            #sys.stdout.write('\n\nTOTAL MACROIMAGES AFTER THE NEAR SOURCE CHECK\n\n')
-            #sys.stdout.write('ra: {0}\n'.format(Img_ra))
-            #sys.stdout.write('dec: {0}\n'.format(Img_dec))
-            #sys.stdout.write('\n')
-    
-    end = time.time() 
-    #if solverKwargs['Verbose']: sys.stdout.write('Elapsed time: {0} seconds\n\n'.format(end-start))
+        sys.stderr.write('\nNo images found for the macromodel, try different settings\n')
+        return None, None, None
 
-        
     return Img_ra, Img_dec, pixel_width
 
     
@@ -285,13 +215,9 @@ def microimages(source_ra,
     only_macro  = solverKwargs['OnlyMacro']
 
     if solverKwargs['SearchWindow'] is None and not only_macro:
-            sys.stderr.write('\n\nMust specify a search window for the complete model to perform the analysis\n')
-            sys.stderr.write('Aborting\n')
-            exit(-1)
-        
-    #if only_macro:
-        #sys.stdout.write('\n---- Will perform only the macromodel analysis ----\n')
-        
+        sys.stderr.write('\n\nMust specify a search window for the complete model to perform the analysis\n')
+        return None, None, None
+    
     # indices of the macromodel components
     macro_index = solverKwargs['MacroIndex']
      
@@ -309,9 +235,6 @@ def microimages(source_ra,
         return MacroImg_ra, MacroImg_dec, Macro_pixel_width  
     
     else:
-    
-        # see how much it takes to perform the computation
-        start = time.time()
     
         # settings for the complete model
         model_list    = lens_model_list
@@ -348,29 +271,18 @@ def microimages(source_ra,
                         value = optimizationKwargs[key]
                     solverKwargs.update({key: value})
 
-        # print them out
-        #sys.stdout.write('\n---- Solver settings ----\n\nThe complete model analysis will be performed with the following settings:\n\n')
         if solverKwargs['Optimization']:  
             for key, value in solverKwargs.items():
-                #if key is 'MacroIndex' or key is 'OnlyMacro':
-                    #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),value))
                 if 'Macro' in key in key: pass
                 elif 'NearSource' in key: pass
                 else:
                     if key != 'ScaleFactor' or (key == 'ScaleFactor' and solverKwargs['Scaled']):
                         if key == 'PrecisionLimit' and solverKwargs['Optimization']: pass
-                        #else:
-                            #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('OptimizationPrecisionLimitMacro')),value))
+
         else:
             for key, value in solverKwargs.items():
-                #if key is 'MacroIndex' or key is 'OnlyMacro':
-                    #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('PrecisionLimit')),value))
                 if 'Macro' in key: pass
                 elif 'NearSource' in key: pass
-                #else:
-                    #if key is not 'ScaleFactor' or (key is 'ScaleFactor' and solverKwargs['Scaled']):
-                        #sys.stdout.write("{0} --> {1}\n".format(key.ljust(len('PrecisionLimit')),value))
-        #sys.stdout.write('\n')
         
         # pick up the given macroimage, if selected. Iterate over all the macroimages otherwise
         if img_idx  is None:
@@ -418,17 +330,8 @@ def microimages(source_ra,
         # sanity check on the number of solutions
         if len(Img_ra)==0:
             sys.stderr.write('\n\nNo images found for the complete model\n')
-            sys.stderr.write('Aborting\n')
-            exit()
-            
-        #else:
-        #   sys.stdout.write('\n')
-        #   sys.stdout.write('\n\nIMAGES OF THE COMPLETE MODEL\n\n')
-        #   sys.stdout.write('ra: {0}\n'.format(Img_ra))
-        #   sys.stdout.write('dec: {0}\n'.format(Img_dec))
-        #   sys.stdout.write('\n')
-            
-        end = time.time() 
+            return None, None, None
+
         if solverKwargs['Verbose']: sys.stdout.write('Elapsed time: {0} seconds\n\n'.format(end-start)) 
         
         return Img_ra, Img_dec, MacroImg_ra, MacroImg_dec, pixel_width      
